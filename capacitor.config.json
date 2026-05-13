@@ -1,0 +1,10 @@
+{
+  "appId": "com.miaapp.test",
+  "appName": "Miapp",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false
+    }
+  }
+}
