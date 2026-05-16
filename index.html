@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carte Spirituali</title>
+<style>
+:root{
+  --bg1:#0f2027;
+  --bg2:#203a43;
+  --bg3:#2c5364;
+  --accent:#ff7eb3;
+  --accent2:#ff758c;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Arial;
+  background: linear-gradient(160deg,var(--bg1),var(--bg2),var(--bg3));
+  color:#fff;
+  text-align:center;
+}
+
+h1{margin:18px 0 6px}
+.container{padding:16px}
+
+/* CARD */
+.card{
+  width: 280px;
+  height: 380px;
+  margin: 16px auto;
+  perspective: 1000px;
+}
+.inner{
+  width:100%;height:100%;
+  transition: transform .7s;
+  transform-style: preserve-3d;
+  position:relative;
+}
+.card.flipped .inner{ transform: rotateY(180deg);} 
+
+.face{
+  position:absolute;
+  width:100%;height:100%;
+  border-radius:20px;
+  backface-visibility:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  box-shadow:0 20px 40px rgba(0,0,0,.5);
+}
+
+.front {
+  background: linear-gradient(135deg, #1a2a6c, #6a0572, #c31432);
+  color: white;
+  border-radius: 20px;
+}
+
+.front::after{
+  content:"💫scopri il tuo messaggio 💞";
+  font-size:18px;
+  opacity:.9;
+}
+
+.back{
+  transform: rotateY(180deg);
+  flex-direction:column;
+  background: linear-gradient(160deg,#5f0a87,#a4508b);
+}
+
+#frase{
+  font-size:20px;
+  margin-bottom:10px;
+}
+#consiglio{
+  font-size:14px;
+  opacity:.85;
+}
+
+/* BUTTONS */
+button{
+  margin:8px;
+  padding:12px 18px;
+  border:none;
+  border-radius:12px;
+  font-size:15px;
+  
+background: linear-gradient(135deg, var(--accent), var(--accent2));  
+  color:#fff;
+}
+.row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<h1>✨ Carte Spirituali ✨</h1>
+
+<div class="container">
+
+<div class="card" onclick="flipCard(); cartaGiorno();">
+  
+    <div class="inner" id="innerCard">
+      <div class="face front"></div>
+      <div class="face back">
+        <div id="frase"></div>
+        <div id="consiglio"></div>
+      </div>
+    </div>
+  </div>
+
+  <button onclick="cartaGiorno()">Carta del Giorno</button>
+  <button onclick="siNo()">Domanda SI/NO</button>
+
+  <div class="row">
+<button type="button" onclick="salva(); return false;">Salva</button>
+    
+<button type="button" onclick="condividi()">Condividi</button>
+    
+  </div>
+<div id="salvata"></div>
+</div>
+
+<script>
+const carte = [
+ {f:"La tua energia crea la tua realtà.", c:"Mantieni pensieri puliti."},
+ {f:"Oggi è il giorno del cambiamento.", c:"Fai una scelta nuova."},
+ {f:"Lascia andare il passato.", c:"Concentrati su ora."},
+ {f:"Sei più forte di quanto pensi.", c:"Agisci senza paura."},
+ {f:"L'universo ti guida.", c:"Ascolta i segnali."}
+];
+
+function vibra(){ if(navigator.vibrate) navigator.vibrate(60); }
+
+function flipCard(){
+ document.querySelector('.card').classList.toggle('flipped');
+ vibra();
+}
+
+function cartaGiorno(){
+const oggi = new Date().toISOString().split('T')[0];
+ 
+ let saved = localStorage.getItem(oggi);
+
+ if(!saved){
+  const r = carte[Math.floor(Math.random()*carte.length)];
+  saved = JSON.stringify(r);
+  localStorage.setItem(oggi,saved);
+ }
+
+ const carta = JSON.parse(saved);
+ document.getElementById('frase').innerText = carta.f;
+ document.getElementById('consiglio').innerText = carta.c;
+}
+
+function siNo(){
+ const r = Math.random()>0.5 ? "SI" : "NO";
+ document.getElementById('frase').innerText = r;
+ document.getElementById('consiglio').innerText = ""; // SOLO SI/NO
+}
+
+function salva(){
+ const t = document.getElementById('frase').innerText;
+ localStorage.setItem('ultima',t);
+ alert('Salvata');
+}
+
+
+function condividi() {
+  const t = document.getElementById('frase').innerText;
+
+  if (navigator.share) {
+    navigator.share({ text: t });
+  } else {
+    alert(t);
+  }
+}
+</script>
+
+</body>
+</html>
